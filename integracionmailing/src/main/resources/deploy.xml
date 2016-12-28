@@ -1,0 +1,23 @@
+<project name="Integracion BI" default="run" basedir=".">
+    <description>
+       Run application
+    </description>
+  <!-- set global properties for this build -->
+  <property name="dist"  location="."/>
+	
+	<path id="classpath">
+	  	<fileset dir="." includes="**/*.jar"/>  	
+	</path>	
+	
+   <target name="run">
+        <java fork="true" classname="ar.com.personal.srvnews.EntryPoint">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${dist}"/>            	
+                <path location="${dist}/integracion-1.0.jar"/>
+            </classpath>
+       	</java>
+   	
+   </target>
+</project>
+

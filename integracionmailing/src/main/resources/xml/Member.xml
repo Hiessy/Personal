@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap>
+	
+	
+	<resultMap id="memberMapping" class="Member">
+	        <result property="memberID" column="UserID" javaType="int" jdbcType="INTEGER"/>
+	        <result property="email" column="EmailAddress" javaType="String" jdbcType="VARCHAR"/>
+	        <result property="mailingCustomID.id" column="CustomID" javaType="String" jdbcType="VARCHAR"/>
+			<result property="mailingCustomID.mailingID" column="MailListID" javaType="int" jdbcType="INTEGER"/>
+			<result property="mailingCustomID.date" column="date" javaType="java.sql.Date" jdbcType="TIMESTAMP"/>	        
+	</resultMap>  
+	
+	<select id="getMember">
+	
+	</select>
+	
+	<select id="findMembersWhoClickCampaign" resultMap="memberMapping" parameterClass="java.util.Map">
+	
+	<!-- 
+		SELECT d.RelMemberID as MemberID, 
+			   EmailAddress as Email, 
+			   IPOnSubscription as CustomID,
+			   m.RelMailListID as MailListID,
+			   ClickDate as date FROM oemp_campaigns_linkclicks_detailed d
+		INNER JOIN oemp_maillist_members m ON m.RelMemberID = d.RelMemberID
+		WHERE relcampaignID = #RelCampaignID# and m.RelMailListID = #RelMailingID# 
+		GROUP BY d.RelMemberID				
+		 -->	
+	</select>	
+	
+	<select id="findMembersWhoReadCampaign" resultMap="memberMapping" parameterClass="java.util.Map">
+	<!-- 
+		SELECT d.RelMemberID as MemberID, 
+			   EmailAddress as Email, 
+			   IPOnSubscription as CustomID,
+			   m.RelMailListID as MailListID,
+			   ReadDate as date FROM oemp_campaigns_read_detailed d
+		INNER JOIN oemp_maillist_members m ON m.RelMemberID = d.RelMemberID
+		WHERE relcampaignID = #RelCampaignID# and m.RelMailListID = #RelMailingID# 
+		GROUP BY d.RelMemberID
+			-->	
+	</select>
+	<!-- Buscar el memberID usando el campaign id -->
+	<select id="findUnsubscribedMembers" resultClass="Member" parameterClass="Campaign">
+		SELECT SubscriberID, EmailAddress FROM oempro_subscribers_1 m
+		INNER JOIN oempro_stats_unsubscription ocu 
+			ON m.SubscriberID = ocu.RelOwnerUserID
+		WHERE ocu.RelCampaignID = #campaignID#
+	</select>
+	
+	<delete id="deleteUnsubscribedMembers" parameterClass="Campaign">
+		DELETE FROM oempro_stats_unsubscription
+		WHERE RelCampaignID = #campaignID#
+	</delete>
+	
+	<insert id="insertUnsubscribedMembers" parameterClass="java.util.Map">
+		INSERT INTO oempro_stats_unsubscription (
+				RelCampaignID,
+				RelCampaignStatisticsID,
+				RelMemberID,
+				UnsubscriptionDate)
+		VALUES (#RelCampaignID#, 
+				#RelCampaignStatisticsID#, 
+				#RelMemberID#, 
+				#UnsubscriptionDate#) 
+	</insert>
+	
+</sqlMap>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap>
+
+
+	<resultMap id="campaignMapping" class="Campaign">
+		<result property="campaignID" column="CampaignID" javaType="int"
+			jdbcType="INTEGER" />
+		<result property="processedOn" column="SendProcessStartedOn"
+			javaType="java.sql.Date" jdbcType="TIMESTAMP" />
+	</resultMap>
+
+	<select id="findCampaingToProcess" resultMap="campaignMapping"
+		resultClass="Campaign" parameterClass="java.util.Map">
+		SELECT DISTINCT CampaignID, SendProcessStartedOn
+		FROM oempro_campaigns WHERE
+		SendProcessStartedOn >= #fromDate#
+		AND RelOwnerUserID = #administratorID# ORDER BY CampaignID asc;
+	</select>
+
+	<select id="findAllCampaign" resultMap="campaignMapping"
+		resultClass="Campaign" parameterClass="java.util.Map">
+		SELECT DISTINCT c.CampaignID,
+		c.SendProcessStartedOn
+		FROM oempro_campaigns c
+		WHERE
+		SendProcessStartedOn >= #fromDate# AND
+		RelOwnerUserID =
+		#administratorID#
+		ORDER BY CampaignID asc;
+	</select>
+
+	<insert id="setCampaignAsProcessed" parameterClass="Campaign">
+		<!-- INSERT INTO oemp_integracion (CampaignID) VALUES (#campaignID:INTEGER#) -->
+		INSERT INTO oempro_integracion (CampaignID) VALUES
+		(#campaignID:INTEGER#)
+	</insert>
+
+	<delete id="deleteCampaignProcessed">
+		DELETE FROM oempro_integracion
+	</delete>
+
+</sqlMap>

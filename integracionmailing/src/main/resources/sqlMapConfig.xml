@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+<settings cacheModelsEnabled="true" lazyLoadingEnabled="false" />
+
+<typeAlias alias="Campaign" type="ar.com.personal.srvnews.Campaign"/>
+<typeAlias alias="Mailing" type="ar.com.personal.srvnews.Mailing"/>
+<typeAlias alias="Member" type="ar.com.personal.srvnews.Member"/>
+
+<sqlMap resource="xml/Campaign.xml" />
+<sqlMap resource="xml/Mailing.xml" />
+<sqlMap resource="xml/Member.xml" />
+
+</sqlMapConfig>

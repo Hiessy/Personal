@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	<property name="configLocation">
+		<value>classpath:sqlMapConfig.xml</value>
+	</property>
+	</bean>
+	
+	<bean id="customID" class="java.lang.Integer">
+		<constructor-arg value="1"/>
+	</bean>
+	
+	<bean id="daysToWaitBeforeExport" class="java.lang.Integer">
+		<constructor-arg value="5"/>
+	</bean>	
+	
+	<bean id="startProcesingFromDate" class="java.lang.String">
+		<constructor-arg value="20090517"/>
+	</bean>	
+	
+	<bean id="administrator" class="ar.com.personal.srvnews.Administrator"> 
+		<property name="administratorID" value="2"/>
+	</bean>
+	
+	<bean id="campaignDAO" class="ar.com.personal.srvnews.dao.CampaignDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>	
+	
+	<bean id="memberDAO" class="ar.com.personal.srvnews.dao.MemberDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>		
+	
+	<bean id="mailingDAO" class="ar.com.personal.srvnews.dao.MailingDAOImpl">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>	
+	
+	<bean id="exportService" class="ar.com.personal.srvnews.service.ExportServiceImpl">
+		<constructor-arg ref="campaignDAO"/>
+		<constructor-arg ref="mailingDAO"/>
+		<constructor-arg ref="memberDAO"/>
+		<constructor-arg ref="customID"/>
+		<constructor-arg ref="startProcesingFromDate"/>
+		<constructor-arg ref="daysToWaitBeforeExport"/>
+		<constructor-arg ref="administrator"/>		
+		<property name="pathToExportFiles" ref="exportPath"/>
+	</bean>			
+	
+</beans>

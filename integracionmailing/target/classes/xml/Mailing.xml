@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap>
+
+
+	<resultMap id="mailingMapping" class="Mailing">
+		<result property="mailListID" column="EmailID" javaType="int"
+			jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="findMailingsForCampaign" resultMap="mailingMapping"
+		resultClass="Mailing" parameterClass="java.util.Map">
+		SELECT m.EmailID from oempro_campaigns cm
+		INNER JOIN oempro_emails m ON cm.RelEmailID = m.EmailID	
+		WHERE cm.CampaignID = #campaignID#
+	</select>
+
+
+</sqlMap>
