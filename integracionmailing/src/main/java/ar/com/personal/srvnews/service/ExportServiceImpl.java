@@ -69,7 +69,9 @@ public class ExportServiceImpl implements ExportService {
 
 		ExportResult result = new ExportResult();
 
+		//Search for the campaigns to be processes from the "startProcesingFromDate" value set in the applicationContext-beans.xml
 		List<Campaign> campaigns = campaignDAO.findCampaingToProcess(administrator, startProcesingFromDate);
+		
 		int processed = 0;
 		int exported = 0;
 		String memberToExportReaded = "";
@@ -77,11 +79,13 @@ public class ExportServiceImpl implements ExportService {
 		String memberToExportClick = "";
 		int memberToExportClickCount = 0;
 
+
+		
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 		List<Campaign> campaignToMarkAsProcessed = new ArrayList<Campaign>();
 		for (Campaign campaign : campaigns) {
 			try {
-				// Ver cambio
+				//This query has been changed because of the new database schema
 				List<Mailing> asociatedMailing = mailingDAO.findMailingsForCampaign(campaign, customID);
 
 				if (asociatedMailing == null || asociatedMailing.size() == 0) {
@@ -92,8 +96,6 @@ public class ExportServiceImpl implements ExportService {
 					logger.info("--> Exportando campania: " + campaign.getCampaignID());
 					Date procesingDate = fmt.parse(startProcesingFromDate);
 
-					Calendar campaingDate = Calendar.getInstance();
-
 					Calendar campaignDatePlusDaysToWait = Calendar.getInstance();
 					campaignDatePlusDaysToWait.setTime(campaign.getProcessedOn());
 					campaignDatePlusDaysToWait.add(Calendar.DAY_OF_YEAR, daysToWaitBeforeExport);
@@ -101,40 +103,47 @@ public class ExportServiceImpl implements ExportService {
 					if (this.today == null) {
 						today = Calendar.getInstance();
 					}
-
-					logger.info("--> Verificando si la fecha de la campania: " + campaingDate.getTime().toString() + " es mayor a la fecha de inicio de las exportaciones: " + procesingDate.toString());
+					
+					logger.info("--> Verificando si la fecha de la campania: " + campaign.getProcessedOn().toString() + " es mayor a la fecha de inicio de las exportaciones: " + procesingDate.toString());
 					logger.info("--> y si la fecha de la misma mas " + daysToWaitBeforeExport + " dias: " + campaignDatePlusDaysToWait.getTime().toString());
 					logger.info("--> es menor a la fecha de hoy " + today.getTime().toString());
+					
+					//Comparo que la campaña este dentro de los margenes establecidos para procesar la fecha. 
+					//ProcesingDate fecha definida en el applicationContext-beans.xml 
+					//first condition: comprare if campaign is in dates to be processed; second condition: compare if campaign date is over 5 days old.
 					if (campaign.getProcessedOn().compareTo(procesingDate) >= 0 && campaignDatePlusDaysToWait.getTime().compareTo(today.getTime()) < 0) {
 
 						Mailing mailing = asociatedMailing.get(0);
 
 						logger.info("-> mailing ID: " + mailing.getMailListID());
 
+						//Count how many campaigns where processed
 						exported++;
+						
+						//Query to determine which customers have opened the email.
 						List<Member> membersWhoRead = memberDAO.findMembersWhoReadCampaign(campaign, mailing);
 
-						List<Member> membersWhoClick = memberDAO.findMembersWhoClickCampaign(campaign, mailing);
-
-						if (membersWhoRead != null) {
-							logger.info("---> OK! Exportando members que abrieron mail:" + membersWhoRead.size());
-							for (Member m : membersWhoRead) {
-								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
-									memberToExportReaded += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
-									memberToExportReadCount++;
-								}
-							}
-						}
-
-						if (membersWhoClick != null) {
-							logger.info("---> OK! Exportando members que hicieron click en el mail:" + membersWhoClick.size());
-							for (Member m : membersWhoClick) {
-								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
-									memberToExportClick += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
-									memberToExportClickCount++;
-								}
-							}
-						}
+//						List<Member> membersWhoClick = memberDAO.findMembersWhoClickCampaign(campaign, mailing);
+//
+//						if (membersWhoRead != null) {
+//							logger.info("---> OK! Exportando members que abrieron mail:" + membersWhoRead.size());
+//							for (Member m : membersWhoRead) {
+//								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
+//									memberToExportReaded += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
+//									memberToExportReadCount++;
+//								}
+//							}
+//						}
+//
+//						if (membersWhoClick != null) {
+//							logger.info("---> OK! Exportando members que hicieron click en el mail:" + membersWhoClick.size());
+//							for (Member m : membersWhoClick) {
+//								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
+//									memberToExportClick += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
+//									memberToExportClickCount++;
+//								}
+//							}
+//						}
 
 						campaignToMarkAsProcessed.add(campaign);
 					} else {
@@ -142,12 +151,16 @@ public class ExportServiceImpl implements ExportService {
 					}
 				}
 			} catch (ParseException e) {
-				logger.error("--> No se pudo procesar la campania ya que la fecha de inicio " + "de las exportaciones no pude ser parseada:" + campaign.getCampaignID());
+				logger.error("--> No se pudo procesar la campania ya que la fecha de inicio de las exportaciones no pude ser parseada:" + campaign.getCampaignID());
 				e.printStackTrace();
 			}
 			processed++;
 		}
-
+		
+		logger.debug("El total de campañas a procesar fueron: " + campaigns.size());
+		logger.debug("Se exportaron un total de: "+exported +" campañas");
+		logger.debug("Se procesaron un total de: "+processed +" campañas");
+		
 		try {
 			logger.info("--");
 			logger.info("--> Exportando total de members que leyeron el mail: " + memberToExportReadCount);

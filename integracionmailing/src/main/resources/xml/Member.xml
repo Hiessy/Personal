@@ -17,21 +17,18 @@
 	</select>
 	
 	<select id="findMembersWhoClickCampaign" resultMap="memberMapping" parameterClass="java.util.Map">
-	
-	<!-- 
-		SELECT d.RelMemberID as MemberID, 
+<!-- 		SELECT d.RelMemberID as MemberID, 
 			   EmailAddress as Email, 
 			   IPOnSubscription as CustomID,
 			   m.RelMailListID as MailListID,
 			   ClickDate as date FROM oemp_campaigns_linkclicks_detailed d
 		INNER JOIN oemp_maillist_members m ON m.RelMemberID = d.RelMemberID
 		WHERE relcampaignID = #RelCampaignID# and m.RelMailListID = #RelMailingID# 
-		GROUP BY d.RelMemberID				
-		 -->	
+		GROUP BY d.RelMemberID		 -->	
 	</select>	
 	
 	<select id="findMembersWhoReadCampaign" resultMap="memberMapping" parameterClass="java.util.Map">
-	<!-- 
+	
 		SELECT d.RelMemberID as MemberID, 
 			   EmailAddress as Email, 
 			   IPOnSubscription as CustomID,
@@ -40,7 +37,7 @@
 		INNER JOIN oemp_maillist_members m ON m.RelMemberID = d.RelMemberID
 		WHERE relcampaignID = #RelCampaignID# and m.RelMailListID = #RelMailingID# 
 		GROUP BY d.RelMemberID
-			-->	
+			
 	</select>
 	<!-- Buscar el memberID usando el campaign id -->
 	<select id="findUnsubscribedMembers" resultClass="Member" parameterClass="Campaign">
