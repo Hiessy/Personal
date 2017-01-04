@@ -3,7 +3,6 @@
 "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap>
 
-
 	<resultMap id="campaignMapping" class="Campaign">
 		<result property="campaignID" column="CampaignID" javaType="int"
 			jdbcType="INTEGER" />

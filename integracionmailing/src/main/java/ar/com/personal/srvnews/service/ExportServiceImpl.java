@@ -120,10 +120,10 @@ public class ExportServiceImpl implements ExportService {
 						//Count how many campaigns where processed
 						exported++;
 						
-						//Query to determine which customers have opened the email.
+						//TODO//Query to determine which customers have opened the email.
 						List<Member> membersWhoRead = memberDAO.findMembersWhoReadCampaign(campaign, mailing);
-
-//						List<Member> membersWhoClick = memberDAO.findMembersWhoClickCampaign(campaign, mailing);
+						//TODO
+						List<Member> membersWhoClick = memberDAO.findMembersWhoClickCampaign(campaign, mailing);
 //
 //						if (membersWhoRead != null) {
 //							logger.info("---> OK! Exportando members que abrieron mail:" + membersWhoRead.size());
@@ -217,6 +217,8 @@ public class ExportServiceImpl implements ExportService {
 			logger.info("--> Campania: " + c.getCampaignID());
 			// Obtengo la lista de los miembros que no estan subscriptos a las
 			// campañas
+			
+			//TODO
 			List<Member> members = memberDAO.findUnsubscribedMembers(c);
 			logger.info("---> Usuarios encontrados: " + members.size());
 			memberListToExport.addAll(members);
