@@ -2,8 +2,8 @@ package ar.com.personal.srvnews.dao;
 
 import java.util.List;
 
-import ar.com.personal.srvnews.Campaign;
-import ar.com.personal.srvnews.Mailing;
+import ar.com.personal.srvnews.pojo.Campaign;
+import ar.com.personal.srvnews.pojo.Mailing;
 
 public interface MailingDAO {
 

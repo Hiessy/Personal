@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class ExecuteProcessServiceImpl extends TimerTask implements ExecuteProcessService {
 	private static Logger logger = LoggerFactory.getLogger(ExecuteProcessServiceImpl.class);
 	public static final String EN_PROCESO_SUFFIX = "_en_proceso";
-	private static Properties props;// = PropertiesLoader.getConfigProperties();
+	private static Properties props;
 	private Timer timer = null;
 
 	public ExecuteProcessServiceImpl(Timer timerExecute) throws IOException {

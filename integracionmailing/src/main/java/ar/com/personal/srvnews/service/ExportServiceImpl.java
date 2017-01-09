@@ -10,18 +10,21 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import ar.com.personal.srvnews.Administrator;
-import ar.com.personal.srvnews.Campaign;
 import ar.com.personal.srvnews.ExportResult;
-import ar.com.personal.srvnews.Mailing;
-import ar.com.personal.srvnews.Member;
 import ar.com.personal.srvnews.dao.CampaignDAO;
 import ar.com.personal.srvnews.dao.MailingDAO;
 import ar.com.personal.srvnews.dao.MemberDAO;
+import ar.com.personal.srvnews.pojo.Administrator;
+import ar.com.personal.srvnews.pojo.Campaign;
+import ar.com.personal.srvnews.pojo.Mailing;
+import ar.com.personal.srvnews.pojo.Member;
+import ar.com.personal.srvnews.pojo.MetaMember;
 
 public class ExportServiceImpl implements ExportService {
 
@@ -69,9 +72,11 @@ public class ExportServiceImpl implements ExportService {
 
 		ExportResult result = new ExportResult();
 
-		//Search for the campaigns to be processes from the "startProcesingFromDate" value set in the applicationContext-beans.xml
+		// Search for the campaigns to be processes from the
+		// "startProcesingFromDate" value set in the
+		// applicationContext-beans.xml
 		List<Campaign> campaigns = campaignDAO.findCampaingToProcess(administrator, startProcesingFromDate);
-		
+
 		int processed = 0;
 		int exported = 0;
 		String memberToExportReaded = "";
@@ -79,13 +84,12 @@ public class ExportServiceImpl implements ExportService {
 		String memberToExportClick = "";
 		int memberToExportClickCount = 0;
 
-
-		
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 		List<Campaign> campaignToMarkAsProcessed = new ArrayList<Campaign>();
 		for (Campaign campaign : campaigns) {
 			try {
-				//This query has been changed because of the new database schema
+				// This query has been changed because of the new database
+				// schema
 				List<Mailing> asociatedMailing = mailingDAO.findMailingsForCampaign(campaign, customID);
 
 				if (asociatedMailing == null || asociatedMailing.size() == 0) {
@@ -103,48 +107,45 @@ public class ExportServiceImpl implements ExportService {
 					if (this.today == null) {
 						today = Calendar.getInstance();
 					}
-					
+
 					logger.info("--> Verificando si la fecha de la campania: " + campaign.getProcessedOn().toString() + " es mayor a la fecha de inicio de las exportaciones: " + procesingDate.toString());
 					logger.info("--> y si la fecha de la misma mas " + daysToWaitBeforeExport + " dias: " + campaignDatePlusDaysToWait.getTime().toString());
 					logger.info("--> es menor a la fecha de hoy " + today.getTime().toString());
-					
-					//Comparo que la campaña este dentro de los margenes establecidos para procesar la fecha. 
-					//ProcesingDate fecha definida en el applicationContext-beans.xml 
-					//first condition: comprare if campaign is in dates to be processed; second condition: compare if campaign date is over 5 days old.
+
 					if (campaign.getProcessedOn().compareTo(procesingDate) >= 0 && campaignDatePlusDaysToWait.getTime().compareTo(today.getTime()) < 0) {
 
 						Mailing mailing = asociatedMailing.get(0);
-
 						logger.info("-> mailing ID: " + mailing.getMailListID());
-
-						//Count how many campaigns where processed
 						exported++;
-						
-						//TODO//Query to determine which customers have opened the email.
-						List<Member> membersWhoRead = memberDAO.findMembersWhoReadCampaign(campaign, mailing);
-						//TODO
-						List<Member> membersWhoClick = memberDAO.findMembersWhoClickCampaign(campaign, mailing);
-//
-//						if (membersWhoRead != null) {
-//							logger.info("---> OK! Exportando members que abrieron mail:" + membersWhoRead.size());
-//							for (Member m : membersWhoRead) {
-//								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
-//									memberToExportReaded += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
-//									memberToExportReadCount++;
-//								}
-//							}
-//						}
-//
-//						if (membersWhoClick != null) {
-//							logger.info("---> OK! Exportando members que hicieron click en el mail:" + membersWhoClick.size());
-//							for (Member m : membersWhoClick) {
-//								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
-//									memberToExportClick += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
-//									memberToExportClickCount++;
-//								}
-//							}
-//						}
 
+						// TODO
+						List<MetaMember> membersInteraction = memberDAO.getMemberInteraction("OpenDate", "oempro_stats_open", campaign.getCampaignID());
+						List<Member> membersWhoRead = null;
+
+						if (!membersInteraction.isEmpty()) {
+							membersWhoRead = getMemberInfo(membersInteraction);
+							logger.info("---> OK! Exportando members que abrieron mail:" + membersWhoRead.size());
+							for (Member m : membersWhoRead) {
+								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
+									memberToExportReaded += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
+									memberToExportReadCount++;
+								}
+							}
+						}
+
+						membersInteraction = memberDAO.getMemberInteraction("ClickDate", "oempro_stats_link", campaign.getCampaignID());
+						List<Member> membersWhoClick = null;
+
+						if (!membersInteraction.isEmpty()) {
+							membersWhoClick = getMemberInfo(membersInteraction);
+							logger.info("---> OK! Exportando members que hicieron click en el mail:" + membersWhoClick.size());
+							for (Member m : membersWhoClick) {
+								if (m.getMailingCustomID().getId().startsWith("CAMP")) {
+									memberToExportClick += m.getMailingCustomID().getId() + "|" + formatDate(m.getMailingCustomID().getDate()) + System.getProperty("line.separator");
+									memberToExportClickCount++;
+								}
+							}
+						}
 						campaignToMarkAsProcessed.add(campaign);
 					} else {
 						logger.info("---> NO Exportar campania:" + campaign.getCampaignID());
@@ -156,11 +157,11 @@ public class ExportServiceImpl implements ExportService {
 			}
 			processed++;
 		}
-		
+
 		logger.debug("El total de campañas a procesar fueron: " + campaigns.size());
-		logger.debug("Se exportaron un total de: "+exported +" campañas");
-		logger.debug("Se procesaron un total de: "+processed +" campañas");
-		
+		logger.debug("Se exportaron un total de: " + exported + " campañas");
+		logger.debug("Se procesaron un total de: " + processed + " campañas");
+
 		try {
 			logger.info("--");
 			logger.info("--> Exportando total de members que leyeron el mail: " + memberToExportReadCount);
@@ -174,9 +175,6 @@ public class ExportServiceImpl implements ExportService {
 				writeFile(memberToExportReaded, fullPath);
 			}
 
-			// Guardar archivo de leidos y clicks
-			// si uno falla borrar el otro, este proceso tiene que ser
-			// atomico
 			logger.info("--");
 			logger.info("--> Exportando total de members que hicieron click: " + memberToExportClickCount);
 			{
@@ -188,7 +186,7 @@ public class ExportServiceImpl implements ExportService {
 
 			for (Campaign campaign : campaignToMarkAsProcessed) {
 				logger.info("--> Marcando como procesada campania: " + campaign.getCampaignID());
-				campaignDAO.setCampaignAsProcessed(campaign);
+				// campaignDAO.setCampaignAsProcessed(campaign);
 			}
 		} catch (IOException e) {
 			logger.error("--> Error guardando en disco el arhivo de exportacion");
@@ -206,8 +204,7 @@ public class ExportServiceImpl implements ExportService {
 		logger.info("==============================");
 		ExportResult result = new ExportResult();
 
-		administrator.setAdministratorID(1); // TODO REMOVER luego del TEST
-		// obtengo la lista de id de campañas creadas por el administrador¿?.
+		administrator.setAdministratorID(1); 
 		List<Campaign> campaigns = campaignDAO.findAllCampaign(administrator, "20010101");
 		logger.info("--> Recorriendo campanias:" + campaigns.size());
 
@@ -215,13 +212,15 @@ public class ExportServiceImpl implements ExportService {
 		List<Member> memberListToExport = new ArrayList<Member>();
 		for (Campaign c : campaigns) {
 			logger.info("--> Campania: " + c.getCampaignID());
-			// Obtengo la lista de los miembros que no estan subscriptos a las
-			// campañas
-			
-			//TODO
-			List<Member> members = memberDAO.findUnsubscribedMembers(c);
-			logger.info("---> Usuarios encontrados: " + members.size());
-			memberListToExport.addAll(members);
+
+			List<MetaMember> membersInteraction = memberDAO.getMemberInteraction("UnsubscriptionDate", "oempro_stats_unsubscription", c.getCampaignID());
+			List<Member> membersWhoUnsubscribed = null;
+
+			if (!membersInteraction.isEmpty()) {
+				membersWhoUnsubscribed = getMemberInfo(membersInteraction);
+				logger.info("---> Usuarios encontrados: " + membersWhoUnsubscribed.size());
+				memberListToExport.addAll(membersWhoUnsubscribed);
+			}
 		}
 
 		String memberToExport = "";
@@ -244,8 +243,6 @@ public class ExportServiceImpl implements ExportService {
 				writeFile(memberToExport, fullPath);
 				for (Campaign c : campaigns) {
 					logger.info("--> Borrando usuarios de la base de datos campania: " + c.getCampaignID());
-					// Borrar las campañas de la tabla de unsciption
-					memberDAO.deleteUnsubscribedMembers(c);
 				}
 				logger.info("--> Exportacion terminada");
 			} catch (IOException e) {
@@ -281,5 +278,24 @@ public class ExportServiceImpl implements ExportService {
 			e.printStackTrace();
 			return "";
 		}
+	}
+
+	private List<Member> getMemberInfo(List<MetaMember> membersInteraction) {
+
+		List<Member> members = new ArrayList<Member>();
+
+		if (!membersInteraction.isEmpty()) {
+
+			for (MetaMember metaMember : membersInteraction) {
+
+				Member member = memberDAO.getMember("oempro_subscribers_" + metaMember.getListID(), metaMember.getSubscriberID());
+
+				member.getMailingCustomID().setMailingID(metaMember.getSubscriberID());
+				member.getMailingCustomID().setDate(metaMember.getDate());
+				members.add(member);
+
+			}
+		}
+		return members;
 	}
 }

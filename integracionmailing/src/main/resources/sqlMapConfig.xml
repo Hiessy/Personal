@@ -3,11 +3,12 @@
 PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
-	<settings cacheModelsEnabled="true" lazyLoadingEnabled="false" />
+	<settings enhancementEnabled="true" useStatementNamespaces="true" cacheModelsEnabled="true" lazyLoadingEnabled="false" />
 
-	<typeAlias alias="Campaign" type="ar.com.personal.srvnews.Campaign" />
-	<typeAlias alias="Mailing" type="ar.com.personal.srvnews.Mailing" />
-	<typeAlias alias="Member" type="ar.com.personal.srvnews.Member" />
+	<typeAlias alias="Campaign" type="ar.com.personal.srvnews.pojo.Campaign" />
+	<typeAlias alias="Mailing" type="ar.com.personal.srvnews.pojo.Mailing" />
+	<typeAlias alias="Member" type="ar.com.personal.srvnews.pojo.Member" />
+	<typeAlias alias="MetaMember" type="ar.com.personal.srvnews.pojo.MetaMember" />
 
 	<sqlMap resource="xml/Campaign.xml" />
 	<sqlMap resource="xml/Mailing.xml" />

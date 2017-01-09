@@ -1,6 +1,5 @@
 package ar.com.telecom.personal.oempro.dao.impl;
 
-import ar.com.telecom.personal.oempro.dao.ConnectionManager;
 import ar.com.telecom.personal.oempro.dao.OempMembersDao;
 import ar.com.telecom.personal.oempro.model.OempMembers;
 import java.sql.PreparedStatement;
@@ -13,15 +12,6 @@ public class OempMembersDaoImpl extends GenericDao implements OempMembersDao {
 	ResultSet rs;
 	int lastInsertId = 0;
 	int x = 2;
-
-//	static {
-//		try {
-//			getMaillistId = ConnectionManager.getConnection().prepareStatement("select max(MemberID) as lastInsertId from oemp_members");
-//			memberPs = ConnectionManager.getConnection().prepareStatement("select MemberID from oemp_members where Email = ?");
-//		} catch (Exception e) {
-//			logger.error("Error en el prepare statement de oemp members", e);
-//		}
-//	}
 
 	public OempMembers getMember(String email) {
 		try {

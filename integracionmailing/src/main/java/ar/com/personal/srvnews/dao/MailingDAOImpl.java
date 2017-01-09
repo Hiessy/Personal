@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import ar.com.personal.srvnews.Campaign;
-import ar.com.personal.srvnews.Mailing;
+import ar.com.personal.srvnews.pojo.Campaign;
+import ar.com.personal.srvnews.pojo.Mailing;
 
 public class MailingDAOImpl extends SqlMapClientDaoSupport implements MailingDAO {
 

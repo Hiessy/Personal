@@ -5,11 +5,11 @@
 <sqlMap namespace="Procedure">
 
 	<resultMap id="procedureCallClass" class="Procedure">
-		<result property="campaignID" column="CampaignID" javaType="int"
+		<result property="campaignID" column="UserID" javaType="int"
 			jdbcType="INTEGER" />
 	</resultMap>
 
 	<procedure id="getTestClass" resultMap="procedureCallClass"
-		parameterClass="java.util.Map"> { call test() }	</procedure>
+		parameterClass="java.util.Map"> { call obtenerStatsOpen(845) }	</procedure>
 
 </sqlMap>

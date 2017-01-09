@@ -4,6 +4,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
 	<settings enhancementEnabled="true" useStatementNamespaces="true" />
-	<typeAlias alias="Procedure" type="com.test.database.Procedure" />
-	<sqlMap resource="xml/Procedure.xml" />
+	<typeAlias alias="Member" type="ar.com.personal.srvnews.pojo.Member" />
+	<typeAlias alias="MetaMember" type="com.test.database.MetaMember" />
+	<sqlMap resource="xml/Member.xml" />
 </sqlMapConfig>

@@ -1,4 +1,4 @@
-package ar.com.personal.srvnews;
+package ar.com.personal.srvnews.pojo;
 
 public class Mailing {
   

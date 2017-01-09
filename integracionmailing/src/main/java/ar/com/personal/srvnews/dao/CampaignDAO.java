@@ -2,8 +2,8 @@ package ar.com.personal.srvnews.dao;
 
 import java.util.List;
 
-import ar.com.personal.srvnews.Administrator;
-import ar.com.personal.srvnews.Campaign;
+import ar.com.personal.srvnews.pojo.Administrator;
+import ar.com.personal.srvnews.pojo.Campaign;
 
 /**
  * @author Alejandro D. Garin

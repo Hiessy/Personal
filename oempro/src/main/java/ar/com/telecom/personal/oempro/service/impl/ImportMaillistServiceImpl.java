@@ -66,9 +66,6 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 
 			int idMaillist = this.oempMaillistsDao.insertMaillists(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
 
-			// boolean isBanned = false;
-			// boolean isBlacklisted = false;
-
 			insertMemberFile = createLoadDataFile("_INSERT_MEMBERS");
 			pwInsertMemberFile = new PrintWriter(insertMemberFile);
 			pwInsertMemberFile.println("EmailAddress,SubscriptionDate,SubscriptionStatus,SubscriptionIP,UnsubscriptionDate,UnsubscriptionIP,OptInDate");
@@ -84,34 +81,8 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 			// o blacklisted lo inserto en los archivos
 			for (Member member : this.membersMap.values()) {
 
-				// this.oempMembersDao.getMember(member.getEmailAddress());
 				pwInsertMemberFile.println(member.getEmailAddress() + ";" + member.getSubscriptionDate() + ";" + member.getSubscriptionStatus() + ";" + member.getSubscriptionIP() + ";" + member.getUnsubscriptionDate() + ";" + member.getUnsubscriptionIP() + ";"
 						+ member.getOptInDate());
-
-				// No consulto los black listed ya que no estan las tablas en la
-				// nueva bse
-				// isBanned = this.oempMaillistBannedDao.isBanned(idMaillist,
-				// member.getEmailAddress());
-				// isBlacklisted =
-				// this.oempMaillistBlacklistDao.isBlacklisted(idMaillist,
-				// member.getEmailAddress());
-				//
-				// if ((!isBlacklisted) && (!isBanned)) {
-				//
-				// this.oempMembersDao.getMember(member.getEmailAddress());
-				// pwInsertMemberFile.println(member.getEmailAddress() + ";" +
-				// member.getSubscriptionDate() + ";" +
-				// member.getSubscriptionIP() + ";" +
-				// member.getUnsubscriptionDate() + ";" +
-				// member.getUnsubscriptionIP() + ";" + member.getOptInDate());
-				//
-				// } else if (isBlacklisted) {
-				// this.logger.warn("el usaurio: " + member.getEmailAddress() +
-				// " se encuentra blacklisted");
-				// } else {
-				// this.logger.warn("el usaurio: " + member.getEmailAddress() +
-				// " se encuentra banned");
-				// }
 			}
 
 			this.membersMap.clear();
@@ -319,15 +290,7 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 	}
 
 	private String getIpAddress() {
-		String ipAddress = "0.0.0.0";
-		try {
-			ipAddress = InetAddress.getLocalHost().toString().substring(InetAddress.getLocalHost().toString().lastIndexOf("/") + 1, InetAddress.getLocalHost().toString().length());
-		} catch (UnknownHostException e) {
-			logger.error("Error al obtener direccion de ip, asignando ip por defecto 0.0.0.0. El error fue: " + e.getMessage());
-			return ipAddress;
-		}
-
-		return ipAddress;
+		return "CAMP - 0.0.0.0 - Manual Import";
 
 	}
 }

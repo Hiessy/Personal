@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Member">
+
+	<resultMap id="mapStatsToMember" class="Member">
+		<result property="memberID" column="UserID" javaType="int"
+			jdbcType="INTEGER" />
+		<result property="email" column="EmailAddress" javaType="String"
+			jdbcType="VARCHAR" />
+		<result property="mailingCustomID.id" column="CustomID"
+			javaType="String" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="mapStatsToMetaMember" class="MetaMember">
+		<result property="listID" column="RelListID" javaType="int"
+			jdbcType="INTEGER" />
+		<result property="subscriberID" column="RelSubscriberID"
+			javaType="int" jdbcType="INTEGER" />
+		<result property="relEmailID" column="MailListID" javaType="int"
+			jdbcType="INTEGER" />
+		<result property="date" column="Date" javaType="java.sql.Date"
+			jdbcType="String" />
+	</resultMap>
+
+	<select id="getDataIDforEmail" resultMap="mapStatsToMetaMember"
+		parameterClass="java.util.Map">
+
+		select RelListID, RelSubscriberID, RelEmailID as MailListID, $TableDate$ as date 
+		from $TableName$ where RelCampaignID = #RelCampaignID#
+
+	</select>
+
+	<select id="getDataEmail" resultMap="mapStatsToMember"
+		parameterClass="java.util.Map">
+
+		select SubscriberID as UserID, SubscriptionIP as CustomID, EmailAddress from $TableName$ where SubscriberID = #SubscriberID#
+
+	</select>
+
+</sqlMap>

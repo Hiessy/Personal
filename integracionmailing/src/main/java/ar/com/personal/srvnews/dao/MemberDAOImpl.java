@@ -6,9 +6,10 @@ import java.util.Map;
 
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import ar.com.personal.srvnews.Campaign;
-import ar.com.personal.srvnews.Mailing;
-import ar.com.personal.srvnews.Member;
+import ar.com.personal.srvnews.pojo.Campaign;
+import ar.com.personal.srvnews.pojo.Mailing;
+import ar.com.personal.srvnews.pojo.Member;
+import ar.com.personal.srvnews.pojo.MetaMember;
 
 public class MemberDAOImpl extends SqlMapClientDaoSupport implements MemberDAO {
 
@@ -46,6 +47,25 @@ public class MemberDAOImpl extends SqlMapClientDaoSupport implements MemberDAO {
 		params.put("RelCampaignID", campaign.getCampaignID());
 		params.put("RelMailingID", mailing.getMailListID());
 		return super.getSqlMapClientTemplate().queryForList("findMembersWhoClickCampaign", params);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<MetaMember> getMemberInteraction(String tableDate, String tableName, int campaignID) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("TableDate", tableDate);
+		params.put("TableName", tableName);
+		params.put("RelCampaignID", campaignID);
+		return super.getSqlMapClientTemplate().queryForList("Member.getMembersWhoClickCampaign", params);
+	}
+
+	@Override
+	public Member getMember(String tableName,int subsciberID) {
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("SubscriberID", subsciberID);
+		parameters.put("TableName", tableName);
+		
+		return (Member) super.getSqlMapClientTemplate().queryForObject("Member.getDataEmail", parameters);
 	}
 
 }

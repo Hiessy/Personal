@@ -21,7 +21,7 @@
 		<constructor-arg value="20090517"/>
 	</bean>	
 	
-	<bean id="administrator" class="ar.com.personal.srvnews.Administrator"> 
+	<bean id="administrator" class="ar.com.personal.srvnews.pojo.Administrator"> 
 		<property name="administratorID" value="2"/>
 	</bean>
 	

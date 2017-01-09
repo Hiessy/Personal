@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import ar.com.personal.srvnews.Campaign;
-import ar.com.personal.srvnews.Administrator;
+import ar.com.personal.srvnews.pojo.Administrator;
+import ar.com.personal.srvnews.pojo.Campaign;
 
 /**
  * @author Alejandro D. Garin
