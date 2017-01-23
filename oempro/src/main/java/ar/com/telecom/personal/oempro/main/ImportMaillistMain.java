@@ -18,12 +18,11 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Timer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class ImportMaillistMain {
 	private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-	protected static Logger logger = LoggerFactory.getLogger(ImportMaillistMain.class);
+	protected static Logger logger = Logger.getLogger(ImportMaillistMain.class);
 	private static Properties props;
 	public static long checkNewFilesPeriod = 60000L;
 
@@ -129,7 +128,7 @@ public class ImportMaillistMain {
 	}
 
 	private static void createLoadDataDir() throws LoadDataDirectoryException {
-		File dirLoadData = new File("/controlm/integracion/load_data");
+		File dirLoadData = new File(props.getProperty("dir.output"));
 
 		if ((dirLoadData.exists()) && (dirLoadData.isDirectory())) {
 			logger.debug("El directorio para los LOAD DATA ya existe");

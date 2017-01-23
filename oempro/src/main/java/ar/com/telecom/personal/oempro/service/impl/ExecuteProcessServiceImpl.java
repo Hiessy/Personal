@@ -15,11 +15,10 @@ import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class ExecuteProcessServiceImpl extends TimerTask implements ExecuteProcessService {
-	private static Logger logger = LoggerFactory.getLogger(ExecuteProcessServiceImpl.class);
+	private static Logger logger = Logger.getLogger(ExecuteProcessServiceImpl.class);
 	public static final String EN_PROCESO_SUFFIX = "_en_proceso";
 	private static Properties props;
 	private Timer timer = null;

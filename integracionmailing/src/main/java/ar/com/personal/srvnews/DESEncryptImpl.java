@@ -167,7 +167,7 @@ public class DESEncryptImpl implements HasEncryption {
 			Provider[] providers = Security.getProviders();
 			for (int i = 0; i < providers.length; i++) {
 				System.out.println("Provider: " + providers[i].getName() + ", " + providers[i].getInfo());
-				for (Iterator itr = providers[i].keySet().iterator(); itr.hasNext();) {
+				for (Iterator<?> itr = providers[i].keySet().iterator(); itr.hasNext();) {
 					String key = (String) itr.next();
 					String value = (String) providers[i].get(key);
 					System.out.println("\t" + key + " = " + value);

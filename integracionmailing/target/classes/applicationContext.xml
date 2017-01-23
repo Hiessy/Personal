@@ -32,7 +32,7 @@
 	-->
 	
 	<bean id="exportPath" class="java.lang.String">
-		<constructor-arg value="c:/controlm/integracion"/>
+		<constructor-arg value="/controlm/integracion"/>
 	</bean>
 	
 	<import resource="applicationContext-beans.xml"/>

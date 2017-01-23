@@ -3,11 +3,10 @@ package ar.com.telecom.personal.oempro.service.impl;
 import ar.com.telecom.personal.oempro.dao.ConnectionManager;
 import java.sql.PreparedStatement;
 import java.util.TimerTask;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class TimerQueryDummy extends TimerTask {
-	private static Logger logger = LoggerFactory.getLogger(TimerQueryDummy.class);
+	private static Logger logger = Logger.getLogger(TimerQueryDummy.class);
 	private PreparedStatement preparedStatement = null;
 
 	public void run() {

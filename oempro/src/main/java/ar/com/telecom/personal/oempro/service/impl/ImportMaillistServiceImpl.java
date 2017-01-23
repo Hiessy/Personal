@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,12 +26,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro.service.ImportMaillistService {
 
-	protected Logger logger = LoggerFactory.getLogger(getClass());
+	protected Logger logger = Logger.getLogger(getClass());
 	private Properties props;// = PropertiesLoader.getConfigProperties();
 	private OempAdministratorShortcutsDao oempAdministratorShortcutsDao = new ar.com.telecom.personal.oempro.dao.impl.OempAdministratorShortcutsDaoImpl();
 
@@ -137,7 +134,6 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 
 		this.logger.info("-Inicio- Parseo archivo de clientes");
 		String fechaHoy = obtenerHoy();
-		String ipAdress = getIpAddress();
 
 		try {
 			DataInputStream dis = new DataInputStream(new java.io.FileInputStream(file));
@@ -159,7 +155,7 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 				member.setEmailAddress(tokens[1]);
 				member.setSubscriptionDate(fechaHoy);
 				member.setSubscriptionStatus("Subscribed");
-				member.setSubscriptionIP(ipAdress);
+				member.setSubscriptionIP(tokens[0]);
 				member.setUnsubscriptionDate("000-00-00");
 				member.setUnsubscriptionIP("0.0.0.0");
 				member.setOptInDate("000-00-00");
@@ -289,8 +285,4 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 		return dateFormat.format(date).toString();
 	}
 
-	private String getIpAddress() {
-		return "CAMP - 0.0.0.0 - Manual Import";
-
-	}
 }

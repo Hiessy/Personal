@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
+
 
 public class PropertiesLoader {
 	
 	private static List<Properties> propertiesList = new ArrayList<Properties>();
-	private static final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
+	private static final Logger logger = Logger.getLogger(PropertiesLoader.class);
 
 	private static final int CONFIG_PROPERTIES = 0;
 
