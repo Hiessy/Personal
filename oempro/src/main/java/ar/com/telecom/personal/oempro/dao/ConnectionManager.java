@@ -41,7 +41,7 @@ public abstract class ConnectionManager {
 			DriverManager.registerDriver(new Driver());
 
 			conn = DriverManager.getConnection(props.getProperty("jdbc.url"), props.getProperty("jdbc.username"), pass);
-
+		
 			logger.info("Se creo una nueva conexión con la base de datos");
 
 		} catch (Exception e) {
