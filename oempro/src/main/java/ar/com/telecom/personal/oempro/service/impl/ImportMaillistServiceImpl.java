@@ -62,7 +62,7 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 			this.logger.info("creando maillist");
 
 			int idMaillist = this.oempMaillistsDao.insertMaillists(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
-
+					
 			insertMemberFile = createLoadDataFile("_INSERT_MEMBERS");
 			pwInsertMemberFile = new PrintWriter(insertMemberFile);
 			pwInsertMemberFile.println("EmailAddress,SubscriptionDate,SubscriptionStatus,SubscriptionIP,UnsubscriptionDate,UnsubscriptionIP,OptInDate");
@@ -70,6 +70,10 @@ public class ImportMaillistServiceImpl implements ar.com.telecom.personal.oempro
 			String fieldsInsertMembers = "EmailAddress,SubscriptionDate,SubscriptionStatus,SubscriptionIP,UnsubscriptionDate,UnsubscriptionIP,OptInDate";
 			String insertStatement = "LOAD DATA LOCAL INFILE '" + this.props.getProperty("dir.output") + insertMemberFile.getName() + "' INTO TABLE oempro_subscribers_" + idMaillist + " FIELDS TERMINATED BY ';'  IGNORE 1 LINES (" + fieldsInsertMembers + ")";
 
+			//TODO falla recargando dsps de un rato
+			if(idMaillist == 0)
+				idMaillist = this.oempMaillistsDao.insertMaillists(this.file.getName().substring(0, this.file.getName().lastIndexOf(".")));
+			
 			PreparedStatement insertMembersPs = ConnectionManager.getConnection().prepareStatement(insertStatement);
 			PreparedStatement createMembersPs = ConnectionManager.getConnection().prepareStatement(createTableSubscriberSQL(idMaillist));
 			this.logger.info("recorriendo lista de members [ " + this.membersMap.size() + " registros ] ...");
